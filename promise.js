@@ -57,6 +57,44 @@ class MyPromise {
         return promise2
     }
 
+    //all 获取所有的promise，都执行then，把结果放到数组，一起返回
+    static all(promiseArr = []) {
+        return new Promise((resolve, reject) => {
+            let index = 0;
+            let arr = []
+            for (let i = 0; i < promiseArr.length; i++) {
+                promiseArr[i].then(result => {
+                    index++
+                    arr[i] = result
+                    if (index === arr.length) {
+                        resolve(arr)
+                    }
+                }, reason => {
+                    reject(reason)
+                })
+            }
+        })
+    }
+    //谁先执行先返回谁
+    static race(promises) {
+        return new Promise((resolve, reject) => {
+            for (let i = 0; i < promises.length; i++) {
+                promises[i].then(resolve, reject)
+            };
+        })
+    }
+    //resolve方法 
+    static resolve(result) {
+        return new Promise((resolve, reject) => {
+            resolve(result)
+        });
+    }
+    //reject方法 
+    static reject(reason) {
+        return new Promise((resolve, reject) => {
+            reject(reason)
+        });
+    }
 
 }
 
@@ -89,9 +127,8 @@ function resolvePromise(promise2, x, resolve, reject) {
             called = true; // 取then出错了那就不要在继续执行了       
             reject(e);
         }
-       
-    }
-    else {
+
+    } else {
         resolve(x);
     }
 
